@@ -12,8 +12,20 @@ var app = express();
 ///////////////////////
 
 app.use(logger(app.get("env") === "production" ? "combined" : "dev"));
+
+// parse application/json
 app.use(bodyParser.json());
+
+// parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// CORS
+// This allows client applications from other domains use the API Server
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 
 //////////////////
