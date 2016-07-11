@@ -7,24 +7,29 @@ var api = require('./api/index');
 var app = express();
 
 
-app.set("env", process.env.NODE_ENV || "development");
-app.set("host", process.env.HOST || "0.0.0.0");
-app.set("port", process.env.PORT || 3000);
+///////////////////////
+// Server Middleware
+///////////////////////
 
 app.use(logger(app.get("env") === "production" ? "combined" : "dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Set API queries
+
+//////////////////
+// API Queries
+//////////////////
+
 app.use('/', api);
 
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
+//////////////////
+// Server Setup
+//////////////////
+
+app.set("env", process.env.NODE_ENV || "development");
+app.set("host", process.env.HOST || "0.0.0.0");
+app.set("port", process.env.PORT || 3000);
 
 app.listen(app.get("port"), function () {
     console.log('\n' + '**********************************');
@@ -36,6 +41,13 @@ app.listen(app.get("port"), function () {
 ////////////////////
 // Error Handlers
 ////////////////////
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
 
 // development error handler
 // will print stacktrace

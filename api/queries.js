@@ -31,7 +31,7 @@ function getAllPlaces(req, res, next) {
 
 function getPlace(req, res, next) {
   var pupID = parseInt(req.params.id);
-  db.one('select * from places where id = $1', pupID)
+  db.one('select * from places_aoi_2d where id = $1', pupID)
     .then(function (data) {
       res.status(200)
         .json({
@@ -45,7 +45,7 @@ function getPlace(req, res, next) {
     });
 }
 
-function createPuppy(req, res, next) {
+function createPlace(req, res, next) {
   req.body.age = parseInt(req.body.age);
   db.none('insert into places(name, type, population)' +
       'values(${name}, ${breed}, ${age}, ${sex})',
@@ -62,7 +62,7 @@ function createPuppy(req, res, next) {
     });
 }
 
-function updatePuppy(req, res, next) {
+function updatePlace(req, res, next) {
   db.none('update places set name=$1, type=$2, population=$3 where id=$4',
     [req.body.name, req.body.type, parseInt(req.body.population),
       parseInt(req.params.id)])
@@ -78,7 +78,7 @@ function updatePuppy(req, res, next) {
     });
 }
 
-function removePuppy(req, res, next) {
+function removePlace(req, res, next) {
   var pupID = parseInt(req.params.id);
   db.result('delete from places where id = $1', pupID)
     .then(function (result) {
