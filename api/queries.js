@@ -6,7 +6,7 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://localhost:5432/locations'; // Locations is an example database name
+var connectionString = 'postgres://localhost:5432/startrek'; // startrek is an example database name
 var db = pgp(connectionString);
 
 
@@ -14,14 +14,14 @@ var db = pgp(connectionString);
 // Query Functions
 /////////////////////
 
-function getAllPlaces(req, res, next) {
-  db.any('select * from places')
+function getAllStarships(req, res, next) {
+  db.any('select * from starships')
     .then(function (data) {
       res.status(200)
         .json({
           status: 'success',
           data: data,
-          message: 'Retrieved ALL places'
+          message: 'Retrieved all starships'
         });
     })
     .catch(function (err) {
@@ -29,15 +29,15 @@ function getAllPlaces(req, res, next) {
     });
 }
 
-function getPlace(req, res, next) {
-  var placeID = parseInt(req.params.id);
-  db.one('select * from places_aoi_2d where id = $1', placeID)
+function getStarship(req, res, next) {
+  var id = parseInt(req.params.id);
+  db.one('select * from starships where id = $1', id)
     .then(function (data) {
       res.status(200)
         .json({
           status: 'success',
           data: data,
-          message: 'Retrieved ONE place'
+          message: 'Retrieved one starship'
         });
     })
     .catch(function (err) {
@@ -45,16 +45,16 @@ function getPlace(req, res, next) {
     });
 }
 
-function createPlace(req, res, next) {
-  req.body.age = parseInt(req.body.age);
-  db.none('insert into places(name, type, population)' +
-      'values(${name}, ${type}, ${population})',
+function createStarship(req, res, next) {
+  req.body.launched = parseInt(req.body.launched);
+  db.none('insert into starships(name, registry, affiliation, launched, class, captain)' +
+      'values(${name}, ${registry}, ${affiliation}, ${launched}, ${class}, ${captain})',
     req.body)
     .then(function () {
       res.status(200)
         .json({
           status: 'success',
-          message: 'Inserted one place'
+          message: 'Inserted one starship'
         });
     })
     .catch(function (err) {
@@ -62,15 +62,14 @@ function createPlace(req, res, next) {
     });
 }
 
-function updatePlace(req, res, next) {
-  db.none('update places set name=$1, type=$2, population=$3 where id=$4',
-    [req.body.name, req.body.type, parseInt(req.body.population),
-      parseInt(req.params.id)])
+function updateStarship(req, res, next) {
+  db.none('update starships set name=$1, registry=$2, affiliation=$3, launched=$4, class=$5, captain=$6 where id=$7',
+    [req.body.name, req.body.registry, req.body.affiliation, parseInt(req.body.launched), req.body.class, parseInt(req.params.id)])
     .then(function () {
       res.status(200)
         .json({
           status: 'success',
-          message: 'Updated place'
+          message: 'Updated starship'
         });
     })
     .catch(function (err) {
@@ -78,15 +77,15 @@ function updatePlace(req, res, next) {
     });
 }
 
-function removePlace(req, res, next) {
-  var pupID = parseInt(req.params.id);
-  db.result('delete from places where id = $1', placeID)
+function removeStarship(req, res, next) {
+  var id = parseInt(req.params.id);
+  db.result('delete from starships where id = $1', id)
     .then(function (result) {
       /* jshint ignore:start */
       res.status(200)
         .json({
           status: 'success',
-          message: `Removed ${result.rowCount} place`
+          message: `Removed ${result.rowCount} starships`
         });
       /* jshint ignore:end */
     })
@@ -101,9 +100,9 @@ function removePlace(req, res, next) {
 /////////////
 
 module.exports = {
-    getAllPlaces: getAllPlaces,
-    getPlace: getPlace,
-    createPlace: createPlace,
-    updatePlace: updatePlace,
-    removePlace: removePlace
+    getAllStarships: getAllStarships,
+    getStarship: getStarship,
+    createStarship: createStarship,
+    updateStarship: updateStarship,
+    removeStarship: removeStarship
 };
