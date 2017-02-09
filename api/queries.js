@@ -15,7 +15,7 @@ var db = pgp(connectionString);
 /////////////////////
 
 function getAllStarships(req, res, next) {
-  db.any('select * from starships')
+  db.any('SELECT * FROM starships')
     .then(function (data) {
       res.status(200)
         .json({
@@ -31,7 +31,7 @@ function getAllStarships(req, res, next) {
 
 function getStarship(req, res, next) {
   var id = parseInt(req.params.id);
-  db.one('select * from starships where id = $1', id)
+  db.one('SELECT * FROM starships WHERE id = $1', id)
     .then(function (data) {
       res.status(200)
         .json({
@@ -47,7 +47,7 @@ function getStarship(req, res, next) {
 
 function createStarship(req, res, next) {
   req.body.launched = parseInt(req.body.launched);
-  db.none('insert into starships(name, registry, affiliation, launched, class, captain)' +
+  db.none('INSERT INTO starships(name, registry, affiliation, launched, class, captain)' +
       'values(${name}, ${registry}, ${affiliation}, ${launched}, ${class}, ${captain})',
     req.body)
     .then(function () {
@@ -63,7 +63,7 @@ function createStarship(req, res, next) {
 }
 
 function updateStarship(req, res, next) {
-  db.none('update starships set name=$1, registry=$2, affiliation=$3, launched=$4, class=$5, captain=$6 where id=$7',
+  db.none('UPDATE starships SET name=$1, registry=$2, affiliation=$3, launched=$4, class=$5, captain=$6 where id=$7',
     [req.body.name, req.body.registry, req.body.affiliation, parseInt(req.body.launched), req.body.class, parseInt(req.params.id)])
     .then(function () {
       res.status(200)
@@ -79,13 +79,13 @@ function updateStarship(req, res, next) {
 
 function removeStarship(req, res, next) {
   var id = parseInt(req.params.id);
-  db.result('delete from starships where id = $1', id)
+  db.result('DELETE FROM starships WHERE id = $1', id)
     .then(function (result) {
       /* jshint ignore:start */
       res.status(200)
         .json({
           status: 'success',
-          message: `Removed ${result.rowCount} starships`
+          message: 'Removed ${result.rowCount} starships'
         });
       /* jshint ignore:end */
     })
